@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ben | Terminal Portfolio</title>
+    <meta
+      name="description"
+      content="A strict terminal-style portfolio website with vim-like keyboard navigation."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <div class="top-chrome" aria-hidden="true">
+        <div class="section-index" id="section-index">[1/5]</div>
+      </div>
+
+      <main id="content" class="content">
+        <section class="panel hero-section" id="whoami" data-section-name="whoami">
+          <div class="section-command">&gt; whoami</div>
+          <div class="boot-sequence" aria-hidden="true">
+            <div class="boot-line">booting tty session...</div>
+            <div class="boot-line">loading portfolio modules...</div>
+            <div class="boot-line">ready.</div>
+          </div>
+          <div class="whoami-block">
+            <div class="whoami-name">Ben Weinstein</div>
+            <div class="whoami-subtitle">Honours Mathematics · University of Waterloo</div>
+            <pre class="whoami-readout">name     Ben Weinstein
+focus    Software, Data, ML
+role     Full Stack @ Kal-Polymers </pre>
+          </div>
+          <div class="hero-lines">
+            <div><span class="label">STACK</span> Rust, Python, TypeScript, React, Flask</div>
+            <div><span class="label">STYLE</span> fast to read, calm to use, structured like a shell</div>
+          </div>
+        </section>
+
+        <section class="panel skills-section" id="skills" data-section-name="skills">
+          <div class="section-command">&gt; ./skills --list</div>
+          <div class="skills-grid">
+            <article class="skill-group">
+              <h2>LANGUAGES</h2>
+              <pre class="tree-block">├── Rust
+├── Python
+├── TypeScript
+├── JavaScript
+└── C</pre>
+            </article>
+            <article class="skill-group">
+              <h2>FRAMEWORKS</h2>
+              <pre class="tree-block">├── React
+├── Next.js
+├── Node.js
+├── Flask
+└── Tokio</pre>
+            </article>
+            <article class="skill-group">
+              <h2>TOOLS / LIBRARIES</h2>
+              <pre class="tree-block">├── Pandas
+├── NumPy
+├── Scikit-learn
+├── Tailwind CSS
+└── Git / Linux / SQL</pre>
+            </article>
+          </div>
+          <div class="sys-info">
+            <div class="sys-row"><span>uptime</span><span>University of Waterloo · Honours Mathematics (Co-op)</span></div>
+            <div class="sys-row"><span>location</span><span>Waterloo, ON</span></div>
+            <div class="sys-row"><span>role</span><span>Full Stack Developer @ Kal-Polymers</span></div>
+            <div class="sys-row"><span>status</span><span><span class="status-dot">●</span> building production software</span></div>
+          </div>
+        </section>
+
+        <section class="panel experience-section" id="experience" data-section-name="experience">
+          <div class="section-command">&gt; ./experience --history</div>
+          <div class="experience-grid">
+            <article class="experience-card">
+              <div class="experience-frame" aria-hidden="true"></div>
+              <div class="experience-body">
+                <div class="experience-title">Kal-Polymers</div>
+                <div class="experience-meta">Full Stack Developer (Co-op) · Mississauga, ON · May 2026 -- Aug 2026</div>
+                <pre class="experience-list">├── Built a React/Flask dashboard for real-time monitoring of manufacturing systems
+├── Designed RESTful APIs for efficient integration of production data pipelines
+├── Implemented data visualizations to surface production and quality insights
+├── Partnered with cross-functional teams to deliver operational software tools
+├── Improved performance and reliability through testing and optimization
+└── Authored technical documentation for long-term system maintainability</pre>
+              </div>
+              <div class="experience-frame" aria-hidden="true"></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel projects-section" id="projects" data-section-name="projects" data-project-mode="true">
+          <div class="section-command">&gt; ./projects --all</div>
+          <div class="section-note">// 5 projects</div>
+          <div class="projects-grid" id="projects-grid">
+            <article class="project-card" tabindex="0" data-project-card>
+              <div class="project-frame project-frame-top" aria-hidden="true"></div>
+              <div class="project-body">
+                <div class="project-head">
+                  <div class="project-title">SMS Spam Detection</div>
+                  <a class="project-repo" href="https://github.com/brweinstein/spamorham" target="_blank" rel="noreferrer">repo ↗</a>
+                </div>
+                <div class="project-copy">Naive Bayes and Logistic Regression classifiers with TF-IDF and numeric features for text-based learning.</div>
+                <div class="tag-row">
+                  <span class="tag">[Python]</span>
+                  <span class="tag">[scikit-learn]</span>
+                  <span class="tag">[NumPy]</span>
+                </div>
+              </div>
+              <div class="project-frame project-frame-bottom" aria-hidden="true"></div>
+            </article>
+            <article class="project-card" tabindex="0" data-project-card>
+              <div class="project-frame project-frame-top" aria-hidden="true"></div>
+              <div class="project-body">
+                <div class="project-head">
+                  <div class="project-title">Terminal Email Client</div>
+                  <a class="project-repo" href="https://github.com/a3l6/hermes" target="_blank" rel="noreferrer">repo ↗</a>
+                </div>
+                <div class="project-copy">Rust CLI/TUI email client supporting IMAP inbox sync and SMTP email sending.</div>
+                <div class="tag-row">
+                  <span class="tag">[Rust]</span>
+                  <span class="tag">[CLI]</span>
+                  <span class="tag">[TUI]</span>
+                </div>
+              </div>
+              <div class="project-frame project-frame-bottom" aria-hidden="true"></div>
+            </article>
+            <article class="project-card" tabindex="0" data-project-card>
+              <div class="project-frame project-frame-top" aria-hidden="true"></div>
+              <div class="project-body">
+                <div class="project-head">
+                  <div class="project-title">Executable Markdown Processor</div>
+                  <a class="project-repo" href="https://github.com/brweinstein/runmd" target="_blank" rel="noreferrer">repo ↗</a>
+                </div>
+                <div class="project-copy">CLI tool that executes fenced Markdown code blocks, embeds outputs inline, and was refactored from Python to Rust.</div>
+                <div class="tag-row">
+                  <span class="tag">[Rust]</span>
+                  <span class="tag">[Python]</span>
+                  <span class="tag">[CLI]</span>
+                </div>
+              </div>
+              <div class="project-frame project-frame-bottom" aria-hidden="true"></div>
+            </article>
+            <article class="project-card" tabindex="0" data-project-card>
+              <div class="project-frame project-frame-top" aria-hidden="true"></div>
+              <div class="project-body">
+                <div class="project-head">
+                  <div class="project-title">Interactive Cryptography Visualizer</div>
+                  <a class="project-repo" href="https://github.com/brweinstein/cryptography_visualizer" target="_blank" rel="noreferrer">repo ↗</a>
+                </div>
+                <div class="project-copy">TypeScript, React, and WebAssembly visualizer for RSA, Diffie-Hellman, AES, SHA-256, and discrete logarithms.</div>
+                <div class="tag-row">
+                  <span class="tag">[TypeScript]</span>
+                  <span class="tag">[React]</span>
+                  <span class="tag">[WebAssembly]</span>
+                </div>
+              </div>
+              <div class="project-frame project-frame-bottom" aria-hidden="true"></div>
+            </article>
+            <article class="project-card" tabindex="0" data-project-card>
+              <div class="project-frame project-frame-top" aria-hidden="true"></div>
+              <div class="project-body">
+                <div class="project-head">
+                  <div class="project-title">Grep Clone</div>
+                  <a class="project-repo" href="https://github.com/brweinstein/greprs" target="_blank" rel="noreferrer">repo ↗</a>
+                </div>
+                <div class="project-copy">Rust, Tokio, Rayon, and Clap reimplementation of GNU grep with regex, parallel search, and syntax highlighting.</div>
+                <div class="tag-row">
+                  <span class="tag">[Rust]</span>
+                  <span class="tag">[Tokio]</span>
+                  <span class="tag">[Rayon]</span>
+                </div>
+              </div>
+              <div class="project-frame project-frame-bottom" aria-hidden="true"></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel contact-section" id="contact" data-section-name="contact">
+          <div class="section-command">&gt; ./contact</div>
+          <pre class="contact-prompt">user@ben:~$ <span class="cursor-block">█</span></pre>
+          <div class="contact-output">
+            <div class="contact-line"><span>echo $GITHUB</span></div>
+            <div class="contact-line contact-value">github.com/brweinstein</div>
+            <div class="contact-line"><span>echo $EMAIL</span></div>
+            <div class="contact-line contact-value">brweinstein68@gmail.com</div>
+            <div class="contact-line"><span>echo $LINKEDIN</span></div>
+            <div class="contact-line contact-value">linkedin.com/in/benjamin-weinstein-5a0924287</div>
+            <div class="contact-line"><span>echo $SITE</span></div>
+            <div class="contact-line contact-value">bweinstein.us</div>
+          </div>
+        </section>
+      </main>
+
+      <div class="mobile-hint" aria-hidden="true">tap a section to scroll</div>
+
+      <footer class="statusbar" aria-label="Status line">
+        <div class="status-left" id="status-left">whoami</div>
+        <div class="status-center" id="status-center">j/k or ↑/↓ navigate sections | h for help</div>
+        <div class="status-right" aria-hidden="true"><span class="cursor-block">█</span></div>
+      </footer>
+    </div>
+
+    <div class="help-overlay" id="help-overlay" hidden>
+      <div class="help-backdrop" data-close-help></div>
+      <section class="help-modal" role="dialog" aria-modal="true" aria-labelledby="help-title">
+        <div class="help-command">&gt; ./help --keys</div>
+        <pre class="help-table" id="help-title">┌────────┬──────────────────────────────────────┐
+│ key    │ action                               │
+├────────┼──────────────────────────────────────┤
+│ j / ↓  │ next section or project card         │
+│ k / ↑  │ previous section or project card     │
+│ g      │ jump to top                          │
+│ G      │ jump to bottom                       │
+│ h / ?  │ toggle this help overlay             │
+│ esc    │ close this overlay                   │
+│ click  │ open projects or scroll sections     │
+└────────┴──────────────────────────────────────┘</pre>
+      </section>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
