@@ -1,0 +1,24 @@
+{
+  "tree": [
+    { "type": "file", "name": "about.md", "path": "content/about.md" },
+    { "type": "file", "name": "contact.md", "path": "content/contact.md" },
+    {
+      "type": "folder",
+      "name": "projects",
+      "children": [
+        { "type": "file", "name": "sms-spam-detection.md", "path": "content/projects/sms-spam-detection.md" },
+        { "type": "file", "name": "terminal-email-client.md", "path": "content/projects/terminal-email-client.md" },
+        { "type": "file", "name": "executable-markdown-processor.md", "path": "content/projects/executable-markdown-processor.md" },
+        { "type": "file", "name": "interactive-cryptography-visualizer.md", "path": "content/projects/interactive-cryptography-visualizer.md" },
+        { "type": "file", "name": "grep-clone.md", "path": "content/projects/grep-clone.md" }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "blog",
+      "children": [
+        { "type": "file", "name": "welcome.md", "path": "content/blog/welcome.md" }
+      ]
+    }
+  ]
+}
