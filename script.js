@@ -1,10 +1,12 @@
 /* ---------- element refs ---------- */
 const landingEl = document.getElementById('landing');
 const explorerEl = document.getElementById('explorer');
+const treePaneEl = document.getElementById('tree-pane');
 const treeRootEl = document.getElementById('tree-root');
 const previewPaneEl = document.getElementById('preview-pane');
 const breadcrumbEl = document.getElementById('path-breadcrumb');
 const statusLeftEl = document.getElementById('status-left');
+const statusCenterEl = document.getElementById('status-center');
 const mobileBackBtn = document.getElementById('mobile-back');
 
 /* ---------- state ---------- */
@@ -12,6 +14,9 @@ let manifest = null;
 let flatVisible = [];
 let selectedIndex = 0;
 let view = 'landing'; // 'landing' | 'tree'
+let focusPane = 'tree'; // 'tree' | 'buffer' — which pane the "cursor" is in
+let bufferLines = []; // navigable elements inside the currently open file
+let cursorLine = 0;
 
 /* ---------- helpers ---------- */
 function isTypingTarget(target) {
@@ -38,6 +43,29 @@ function nodePath(node) {
   return `~/${parts.join('/')}`;
 }
 
+/* ---------- status bar text ---------- */
+function updateStatusCenter() {
+  if (isMobile()) {
+    statusCenterEl.textContent = 'tap to navigate';
+    return;
+  }
+  if (view === 'landing') {
+    statusCenterEl.textContent = '';
+    return;
+  }
+  if (focusPane === 'tree') {
+    statusCenterEl.textContent = 'j/k move · l/enter open · h back · g/G top/bottom · esc landing';
+  } else {
+    statusCenterEl.textContent = 'j/k scroll · g/G top/bottom · h back to tree · q close · esc landing';
+  }
+}
+
+function updatePaneFocusClasses() {
+  treePaneEl.classList.toggle('is-focused', focusPane === 'tree');
+  previewPaneEl.classList.toggle('is-focused', focusPane === 'buffer');
+  updateStatusCenter();
+}
+
 /* ---------- landing -> explorer transition ---------- */
 function enterExplorer() {
   if (view !== 'landing') return;
@@ -46,6 +74,7 @@ function enterExplorer() {
   window.setTimeout(() => {
     landingEl.hidden = true;
     explorerEl.hidden = false;
+    updatePaneFocusClasses();
     if (!manifest) {
       loadManifest();
     } else {
@@ -56,10 +85,12 @@ function enterExplorer() {
 
 function backToLanding() {
   view = 'landing';
+  focusPane = 'tree';
   explorerEl.hidden = true;
   explorerEl.classList.remove('mobile-preview-active');
   landingEl.hidden = false;
   landingEl.classList.remove('landing-exit');
+  updateStatusCenter();
 }
 
 /* ---------- tree loading / flattening ---------- */
@@ -112,7 +143,7 @@ function renderTree() {
   statusLeftEl.textContent = currentNode ? nodePath(currentNode) : '~';
 }
 
-/* ---------- selection / navigation ---------- */
+/* ---------- tree selection / navigation ---------- */
 function moveSelection(delta) {
   if (flatVisible.length === 0) return;
   selectedIndex = Math.min(Math.max(selectedIndex + delta, 0), flatVisible.length - 1);
@@ -147,7 +178,7 @@ function collapseOrParent() {
   }
 }
 
-/* ---------- markdown frontmatter + rendering ---------- */
+/* ---------- markdown frontmatter ---------- */
 function parseFrontmatter(raw) {
   const lines = raw.split('\n');
   const dividerIndex = lines.findIndex((l) => l.trim() === '---');
@@ -166,10 +197,41 @@ function parseFrontmatter(raw) {
   return { meta, body };
 }
 
+/* ---------- image path resolution ---------- */
+// All content images live in content/images/. Markdown files can reference
+// them with just a filename (![alt](photo.png)) or the full path
+// (content/images/photo.png) — both resolve to the same place. Absolute
+// URLs (http/https/data/leading-slash) are left untouched.
+function resolveImageSrc(href) {
+  if (!href) return href;
+  if (/^([a-z][a-z0-9+.-]*:)?\/\//i.test(href) || href.startsWith('data:') || href.startsWith('/')) {
+    return href;
+  }
+  if (href.startsWith('content/images/')) {
+    return href;
+  }
+  return `content/images/${href}`;
+}
+
+function buildRenderer() {
+  const renderer = new marked.Renderer();
+  renderer.image = (href, title, text) => {
+    const src = escapeHtml(resolveImageSrc(href));
+    const alt = escapeHtml(text || '');
+    const titleAttr = title ? ` title="${escapeHtml(title)}"` : '';
+    return `<img src="${src}" alt="${alt}"${titleAttr} loading="lazy">`;
+  };
+  return renderer;
+}
+
+/* ---------- opening a file ---------- */
 async function openFile(node) {
   breadcrumbEl.textContent = nodePath(node);
   statusLeftEl.textContent = nodePath(node);
   previewPaneEl.innerHTML = `<div class="preview-loading">loading ${escapeHtml(node.name)}...</div>`;
+
+  focusPane = 'buffer';
+  updatePaneFocusClasses();
 
   if (isMobile()) {
     explorerEl.classList.add('mobile-preview-active');
@@ -181,8 +243,10 @@ async function openFile(node) {
     const raw = await res.text();
     const { meta, body } = parseFrontmatter(raw);
     renderPreview(meta, body);
+    initBufferCursor();
   } catch (err) {
     previewPaneEl.innerHTML = `<div class="preview-error">could not load ${escapeHtml(node.path)}</div>`;
+    bufferLines = [];
   }
 }
 
@@ -192,6 +256,9 @@ function renderPreview(meta, body) {
   if (meta && meta.title) {
     html += `<div class="preview-frontmatter">`;
     html += `<h1>${escapeHtml(meta.title)}</h1>`;
+    if (meta.date) {
+      html += `<div class="preview-date">${escapeHtml(meta.date)}</div>`;
+    }
     if (meta.repo) {
       html += `<a class="preview-repo" href="${escapeHtml(meta.repo)}" target="_blank" rel="noreferrer">repo ↗</a>`;
     }
@@ -203,8 +270,46 @@ function renderPreview(meta, body) {
     html += `</div>`;
   }
 
-  html += `<div class="preview-markdown">${marked.parse(body)}</div>`;
+  html += `<div class="preview-markdown">${marked.parse(body, { renderer: buildRenderer() })}</div>`;
   previewPaneEl.innerHTML = html;
+}
+
+/* ---------- buffer (content) cursor ---------- */
+function collectBufferLines() {
+  const container = previewPaneEl.querySelector('.preview-markdown');
+  if (!container) return [];
+
+  const lines = [];
+  Array.from(container.children).forEach((child) => {
+    if (child.tagName === 'UL' || child.tagName === 'OL') {
+      Array.from(child.children).forEach((li) => lines.push(li));
+    } else {
+      lines.push(child);
+    }
+  });
+  return lines;
+}
+
+function initBufferCursor() {
+  bufferLines = collectBufferLines();
+  cursorLine = 0;
+  updateCursorHighlight();
+}
+
+function updateCursorHighlight() {
+  bufferLines.forEach((el, i) => {
+    el.classList.toggle('is-cursor-line', i === cursorLine);
+  });
+  const current = bufferLines[cursorLine];
+  if (current) {
+    current.scrollIntoView({ block: 'nearest' });
+  }
+}
+
+function moveCursor(delta) {
+  if (bufferLines.length === 0) return;
+  cursorLine = Math.min(Math.max(cursorLine + delta, 0), bufferLines.length - 1);
+  updateCursorHighlight();
 }
 
 /* ---------- mobile back ---------- */
@@ -223,6 +328,19 @@ treeRootEl.addEventListener('click', (event) => {
   openSelected();
 });
 
+/* ---------- click in preview pane moves cursor focus there ---------- */
+previewPaneEl.addEventListener('click', (event) => {
+  if (bufferLines.length === 0) return;
+  focusPane = 'buffer';
+  updatePaneFocusClasses();
+
+  const clickedLine = bufferLines.findIndex((el) => el.contains(event.target));
+  if (clickedLine !== -1) {
+    cursorLine = clickedLine;
+    updateCursorHighlight();
+  }
+});
+
 /* ---------- keyboard ---------- */
 window.addEventListener('keydown', (event) => {
   if (isTypingTarget(event.target)) return;
@@ -235,11 +353,55 @@ window.addEventListener('keydown', (event) => {
     return;
   }
 
+  if (event.key === 'Escape') {
+    event.preventDefault();
+    backToLanding();
+    return;
+  }
+
+  if (focusPane === 'buffer') {
+    switch (event.key) {
+      case 'j':
+      case 'ArrowDown':
+        event.preventDefault();
+        moveCursor(event.ctrlKey ? 5 : 1);
+        break;
+      case 'k':
+      case 'ArrowUp':
+        event.preventDefault();
+        moveCursor(event.ctrlKey ? -5 : -1);
+        break;
+      case 'd':
+        if (event.ctrlKey) { event.preventDefault(); moveCursor(5); }
+        break;
+      case 'u':
+        if (event.ctrlKey) { event.preventDefault(); moveCursor(-5); }
+        break;
+      case 'g':
+        event.preventDefault();
+        cursorLine = 0;
+        updateCursorHighlight();
+        break;
+      case 'G':
+        event.preventDefault();
+        cursorLine = bufferLines.length - 1;
+        updateCursorHighlight();
+        break;
+      case 'h':
+      case 'ArrowLeft':
+      case 'q':
+        event.preventDefault();
+        focusPane = 'tree';
+        updatePaneFocusClasses();
+        break;
+      default:
+        break;
+    }
+    return;
+  }
+
+  // focusPane === 'tree'
   switch (event.key) {
-    case 'Escape':
-      event.preventDefault();
-      backToLanding();
-      break;
     case 'j':
     case 'ArrowDown':
       event.preventDefault();
@@ -280,6 +442,8 @@ window.addEventListener('keydown', (event) => {
       break;
   }
 });
+
+window.addEventListener('resize', updateStatusCenter);
 
 /* ---------- init ---------- */
 if (typeof marked !== 'undefined') {

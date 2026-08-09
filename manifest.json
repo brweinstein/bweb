@@ -6,8 +6,8 @@
       "type": "folder",
       "name": "projects",
       "children": [
+        { "type": "file", "name": "mlb-pythagorean-win-expectation.md", "path": "content/projects/mlb-pythagorean-win-expectation.md" },
         { "type": "file", "name": "sms-spam-detection.md", "path": "content/projects/sms-spam-detection.md" },
-        { "type": "file", "name": "terminal-email-client.md", "path": "content/projects/terminal-email-client.md" },
         { "type": "file", "name": "executable-markdown-processor.md", "path": "content/projects/executable-markdown-processor.md" },
         { "type": "file", "name": "interactive-cryptography-visualizer.md", "path": "content/projects/interactive-cryptography-visualizer.md" },
         { "type": "file", "name": "grep-clone.md", "path": "content/projects/grep-clone.md" }

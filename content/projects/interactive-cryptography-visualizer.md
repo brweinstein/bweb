@@ -1,10 +1,12 @@
 title: Interactive Cryptography Visualizer
 repo: https://github.com/brweinstein/cryptography_visualizer
 tags: TypeScript, React, WebAssembly
+date: Sep 2025 -- Dec 2025
 ---
 
-TypeScript, React, and WebAssembly visualizer for RSA, Diffie-Hellman, AES, SHA-256, and discrete logarithms.
+Visualizer for common cryptographic algorithms, built with React and WebAssembly.
 
 ## Overview
 
-Add your deep-dive write-up here: why WebAssembly, how each algorithm is visualized, and any UX decisions worth calling out.
+- Implemented and visualized RSA, Diffie-Hellman, AES, SHA-256, and discrete logarithms
+- Built a responsive Next.js frontend enabling real-time parameter exploration

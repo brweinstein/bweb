@@ -6,7 +6,7 @@
     <title>Ben | Terminal Portfolio</title>
     <meta
       name="description"
-      content="A 100% keyboard-navigable, file-tree-style portfolio website."
+      content="Ben Weinstein — Data Science student at the University of Waterloo. A 100% keyboard-navigable, file-tree-style portfolio website."
     />
     <link rel="stylesheet" href="styles.css" />
   </head>
@@ -16,15 +16,15 @@
       <section id="landing" class="landing-screen">
         <div class="landing-photo">
           <img
-            src="content/assets/profile.jpg"
+            src="content/images/bweinste.png"
             alt="Ben Weinstein"
             onerror="this.parentElement.classList.add('photo-fallback'); this.remove();"
           />
         </div>
         <div class="landing-name">Ben Weinstein</div>
         <p class="landing-bio">
-          Honours Mathematics @ University of Waterloo. I build software, data
-          tools, and things that are fast to read and calm to use.
+          Honours Data Science @ University of Waterloo. I build software, data
+          tools, and ML models that are fast to read and calm to use.
         </p>
         <div class="landing-prompt">
           <span class="key-hint desktop-only">press <kbd>Enter</kbd> to continue</span>
@@ -54,10 +54,7 @@
 
         <footer class="statusbar" aria-label="Status line">
           <div class="status-left" id="status-left">~</div>
-          <div class="status-center desktop-only" id="status-center">
-            j/k move &middot; l/enter open &middot; h back &middot; g/G top/bottom &middot; esc landing
-          </div>
-          <div class="status-center mobile-only">tap to navigate</div>
+          <div class="status-center" id="status-center"></div>
           <div class="status-right" aria-hidden="true"><span class="cursor-block">█</span></div>
         </footer>
       </div>
